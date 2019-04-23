@@ -45,6 +45,27 @@ $(function () {
     })
 })
 ////////////////nizej normalny kod
+function logInVisibility() {
+    chrome.storage.local.get(['loggedIn'], function (result) {
+
+        if (result.loggedIn == "Const" || result.loggedIn == "Temp") {
+            $('#logoutDiv').removeClass('cantsee');
+            $('#loginDiv').addClass('cantsee');
+
+        } else {
+            $('#loginDiv').removeClass('cantsee');
+            $('#logoutDiv').addClass('cantsee');
+        }
+    })
+}
+logInVisibility()
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.type == "check") {
+        logInVisibility()
+    }
+});
+
 $("#createKey").click(function () {
     chrome.storage.local.get(['UserList'], function (result) {
         console.log(result.UserList);
@@ -73,9 +94,10 @@ $("#loginKey").click(function () {
         userList.forEach(function (user) {
             if (user.name == $('#loginOwner').val() && user.password == $('#loginPassword').val()) {
                 if ($('#rememberCheck').is(":checked")) {
-                    chrome.storage.local.set({ currentOwner: user.name, currentPrivKey: user.privkey, currentPubKey: user.publicKey });
+                    chrome.storage.local.set({ loggedIn: "Const", currentOwner: user.name, currentPrivKey: user.privkey, currentPubKey: user.publicKey });
                 } else {
-                    chrome.runtime.sendMessage({type: "Login", name: user.name, privkey: user.privkey, publicKey: user.publicKey});
+                    chrome.storage.local.set({ loggedIn: "Temp" });
+                    chrome.runtime.sendMessage({ type: "Login", name: user.name, privkey: user.privkey, publicKey: user.publicKey });
                 }
                 validation = true;
             }
@@ -83,11 +105,20 @@ $("#loginKey").click(function () {
         if (!validation) {
             $('#loginKey').addClass('is-invalid');
         }
+        logInVisibility();
     })
 });
 
 $("#logoutKey").click(function () {
-    chrome.storage.local.remove(['currentOwner', 'currentPrivKey', 'currentPubKey']);
+    chrome.storage.local.get(['loggedIn'], function (result) {
+        if (result.loggedIn == "Const") {
+            chrome.storage.local.remove(['currentOwner', 'currentPrivKey', 'currentPubKey']);
+        } else if (result.loggedIn == "Temp") {
+            chrome.runtime.sendMessage({ type: "Logout" });
+        }
+        chrome.storage.local.remove(['loggedIn']);
+        logInVisibility();
+    });
 });
 
 function createKey() {
