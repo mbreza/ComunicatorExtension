@@ -1,9 +1,9 @@
 import 'bootstrap';
 import '../scss/popup.scss';
-import { User } from './user.js'
 
 var $ = require("jquery");
 var openpgp = require('openpgp');
+
 
 $(function () {
     chrome.storage.local.get(['UserList', 'currentOwner', 'loggedIn'], function(result) {

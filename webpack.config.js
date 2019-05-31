@@ -24,7 +24,8 @@ var options = {
     popup: path.join(__dirname, "src", "js", "popup.js"),
     options: path.join(__dirname, "src", "js", "options.js"),
     background: path.join(__dirname, "src", "js", "background.js"),
-    user: path.join(__dirname, "src", "js", "user.js"),
+    user: path.join(__dirname, "src", "js", "modules", "user.js"),
+    validation: path.join(__dirname, "src", "js", "modules", "validation.js"),
     content: path.join(__dirname, "src", "js", "content.js")
   },
   output: {
@@ -60,11 +61,6 @@ var options = {
             loader: 'sass-loader'
           }
         ]
-      },
-      {
-        test: /\.css$/,
-        loader: "style-loader!css-loader",
-        exclude: /node_modules/
       },
       {
         test: new RegExp('\.(' + fileExtensions.join('|') + ')$'),
