@@ -17,7 +17,7 @@
     "fs-extra": "7.0.1",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "3.2.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "node-sass": "^4.11.0",
     "openpgp": "^4.4.10",
     "popper.js": "^1.15.0",
